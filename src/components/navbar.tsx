@@ -36,9 +36,28 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  if (!session) return null;
+  const links = session ? (session.user.role === "HR" ? hrLinks : employeeLinks) : [];
 
-  const links = session.user.role === "HR" ? hrLinks : employeeLinks;
+  if (!session) {
+    return (
+      <nav className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
+          <Link href="/" className="flex items-center gap-2 font-bold text-lg">
+            <Brain className="h-6 w-6 text-primary" />
+            <span>SkillsHub</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/login">
+              <Button variant="ghost" size="sm">Sign In</Button>
+            </Link>
+            <Link href="/signup">
+              <Button size="sm">Sign Up</Button>
+            </Link>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
