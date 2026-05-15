@@ -26,21 +26,22 @@ export default async function Home() {
       />
 
       <div className="relative z-10 flex flex-col min-h-[calc(100vh-3.5rem)] justify-end">
-        <div className="px-4 pb-10 sm:px-8 sm:pb-14">
-          <div className="mx-auto max-w-xl rounded-2xl border border-white/40 bg-white/30 px-8 py-8 backdrop-blur-xl shadow-lg text-center sm:px-10 sm:py-10">
-            <h1 className="text-xl font-bold tracking-tight text-slate-800 sm:text-2xl">
-              AI-Powered Skills Intelligence
-            </h1>
-            <p className="mt-3 text-sm text-slate-700 leading-relaxed sm:text-base">
-              Upload resumes and let AI extract structured skill profiles.
-              Search your talent pool with natural language.
-            </p>
+        <div className="px-4 pb-6 sm:px-6 sm:pb-8">
+          <div className="mx-auto max-w-4xl rounded-xl border border-white/40 bg-white/30 px-6 py-4 backdrop-blur-xl shadow-lg text-center flex flex-col sm:flex-row sm:items-center sm:justify-between sm:text-left gap-3 sm:gap-6">
+            <div className="flex-1">
+              <h1 className="text-lg font-bold tracking-tight text-slate-800 sm:text-xl">
+                AI-Powered Skills Intelligence
+              </h1>
+              <p className="mt-1 text-xs text-slate-600 leading-relaxed sm:text-sm">
+                Upload resumes and let AI extract structured skill profiles. Search your talent pool with natural language.
+              </p>
+            </div>
             <Link
               href="/login"
-              className="mt-6 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-800 px-6 text-sm font-medium text-white shadow hover:bg-slate-700 transition-colors"
+              className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-slate-800 px-5 text-xs font-medium text-white shadow hover:bg-slate-700 transition-colors"
             >
               Get Started
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
