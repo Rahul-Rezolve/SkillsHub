@@ -81,7 +81,7 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <Link href="/search">
           <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardHeader>
@@ -178,36 +178,32 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-primary" />
-            <CardTitle>How SkillsHub Works</CardTitle>
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <Brain className="h-5 w-5 text-primary" />
+          <h2 className="font-semibold leading-none tracking-tight">How SkillsHub Works</h2>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-3 text-sm">
+          <div className="space-y-1">
+            <p className="font-medium">1. Upload Resumes</p>
+            <p className="text-muted-foreground">
+              Upload PDF resumes and AI extracts structured skill profiles with inferred related skills.
+            </p>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-3 text-sm">
-            <div className="space-y-1">
-              <p className="font-medium">1. Upload Resumes</p>
-              <p className="text-muted-foreground">
-                Upload PDF resumes and Gemini AI extracts structured skill profiles with inferred related skills.
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="font-medium">2. Review & Approve</p>
-              <p className="text-muted-foreground">
-                HR reviews extracted profiles, edits if needed, and approves to commit to the employee database.
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="font-medium">3. Smart Search</p>
-              <p className="text-muted-foreground">
-                Search for talent using natural language. AI understands context and ranks candidates with explanations.
-              </p>
-            </div>
+          <div className="space-y-1">
+            <p className="font-medium">2. Review & Approve</p>
+            <p className="text-muted-foreground">
+              HR reviews extracted profiles, edits if needed, and approves to commit to the employee database.
+            </p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="space-y-1">
+            <p className="font-medium">3. Smart Search</p>
+            <p className="text-muted-foreground">
+              Search for talent using natural language. AI understands context and ranks candidates with explanations.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
