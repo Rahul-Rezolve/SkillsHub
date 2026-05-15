@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { geminiPro, geminiFlash, callWithRetry } from "@/lib/gemini";
+import { chatCompletion, callWithRetry } from "@/lib/gemini";
 import { EXTRACTION_SYSTEM_PROMPT, SKILL_INFERENCE_PROMPT } from "@/lib/prompts";
-import {
-  extractionResponseSchema,
-  inferredSkillsSchema,
-} from "@/lib/schemas";
 import { SKILL_TAXONOMY } from "@/lib/skill-taxonomy";
 import { prisma } from "@/lib/db";
+import pdfParse from "pdf-parse";
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,36 +24,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Parse PDF to text
     const bytes = await file.arrayBuffer();
-    const base64 = Buffer.from(bytes).toString("base64");
+    const pdfData = await pdfParse(Buffer.from(bytes));
+    const resumeText = pdfData.text;
 
-    // Stage 1: Extract structured data from PDF
+    if (!resumeText || resumeText.trim().length < 50) {
+      return NextResponse.json(
+        { error: "Could not extract text from PDF. The file may be image-based or empty." },
+        { status: 400 }
+      );
+    }
+
+    // Stage 1: Extract structured data from resume text
+    const extractionSystemPrompt = EXTRACTION_SYSTEM_PROMPT + `
+
+You MUST respond with valid JSON matching this exact structure:
+{
+  "name": "string",
+  "email": "string",
+  "title": "string",
+  "location": "string",
+  "skills": [{ "name": "string", "category": "LANGUAGE|FRAMEWORK|PLATFORM|TOOL|DOMAIN", "proficiency": "NOVICE|INTERMEDIATE|EXPERT", "yearsExp": number }],
+  "projects": [{ "name": "string", "description": "string", "role": "string", "startDate": "YYYY-MM-DD", "endDate": "YYYY-MM-DD or empty", "techStack": ["string"] }],
+  "certifications": [{ "name": "string", "issuer": "string", "date": "YYYY-MM-DD" }]
+}`;
+
     const extractionResult = await callWithRetry(async () => {
-      const result = await geminiPro.generateContent({
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                inlineData: {
-                  mimeType: "application/pdf",
-                  data: base64,
-                },
-              },
-              {
-                text: "Extract the complete professional profile from this resume. Be thorough and extract ALL information.",
-              },
-            ],
-          },
-        ],
-        systemInstruction: EXTRACTION_SYSTEM_PROMPT,
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: extractionResponseSchema as any,
-          temperature: 0.2,
-        },
-      });
-      return JSON.parse(result.response.text());
+      const result = await chatCompletion(
+        extractionSystemPrompt,
+        `Extract the complete professional profile from this resume. Be thorough and extract ALL information.\n\nRESUME TEXT:\n${resumeText}`,
+        0.2
+      );
+      return JSON.parse(result);
     });
 
     // Stage 2: Infer related skills
@@ -78,21 +78,15 @@ export async function POST(req: NextRequest) {
       taxonomyList
     ).replace("{skills}", skillsList);
 
+    const inferenceSystemPrompt = `You are an expert at inferring related technical skills. Respond with valid JSON matching: { "inferredSkills": [{ "name": "string", "category": "LANGUAGE|FRAMEWORK|PLATFORM|TOOL|DOMAIN", "proficiency": "NOVICE|INTERMEDIATE|EXPERT", "yearsExp": number, "confidence": number, "reason": "string" }] }`;
+
     const inferenceResult = await callWithRetry(async () => {
-      const result = await geminiFlash.generateContent({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: inferencePrompt }],
-          },
-        ],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: inferredSkillsSchema as any,
-          temperature: 0.3,
-        },
-      });
-      return JSON.parse(result.response.text());
+      const result = await chatCompletion(
+        inferenceSystemPrompt,
+        inferencePrompt,
+        0.3
+      );
+      return JSON.parse(result);
     });
 
     // Merge inferred skills (exclude duplicates)

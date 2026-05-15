@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { geminiPro, geminiFlash, callWithRetry } from "@/lib/gemini";
+import { chatCompletion, callWithRetry } from "@/lib/gemini";
 import { SEARCH_PARSE_PROMPT, SEARCH_RANKING_PROMPT } from "@/lib/prompts";
-import { searchParseSchema, searchRankingSchema } from "@/lib/schemas";
 import { prisma } from "@/lib/db";
 import { searchSchema } from "@/lib/validations";
 
@@ -26,22 +25,25 @@ export async function POST(req: NextRequest) {
     const { query } = parsed.data;
 
     // Stage A: Parse query into structured filters
+    const parseSystemPrompt = SEARCH_PARSE_PROMPT + `
+
+You MUST respond with valid JSON matching this exact structure:
+{
+  "requiredSkills": ["string"],
+  "minYears": number | null,
+  "location": "string" | null,
+  "availability": "unallocated" | null,
+  "seniority": "junior" | "mid" | "senior" | null,
+  "domain": "string" | null
+}`;
+
     const filters = await callWithRetry(async () => {
-      const result = await geminiFlash.generateContent({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: `Parse this search query: "${query}"` }],
-          },
-        ],
-        systemInstruction: SEARCH_PARSE_PROMPT,
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: searchParseSchema as any,
-          temperature: 0.2,
-        },
-      });
-      return JSON.parse(result.response.text());
+      const result = await chatCompletion(
+        parseSystemPrompt,
+        `Parse this search query: "${query}"`,
+        0.2
+      );
+      return JSON.parse(result);
     });
 
     // Build DB query from parsed filters
@@ -123,22 +125,19 @@ async function rankCandidates(query: string, candidates: any[], filters: any) {
     JSON.stringify(candidateSummaries, null, 2)
   );
 
-  // Stage B: Rank candidates with Gemini Pro
+  // Stage B: Rank candidates with AI
+  const rankingSystemPrompt = `You are an expert HR talent matcher. Respond with valid JSON matching this exact structure:
+{
+  "rankings": [{ "employeeId": "string", "score": number, "reasoning": "string" }]
+}`;
+
   const ranking = await callWithRetry(async () => {
-    const result = await geminiPro.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        responseMimeType: "application/json",
-        responseSchema: searchRankingSchema as any,
-        temperature: 0.4,
-      },
-    });
-    return JSON.parse(result.response.text());
+    const result = await chatCompletion(
+      rankingSystemPrompt,
+      prompt,
+      0.4
+    );
+    return JSON.parse(result);
   });
 
   // Hydrate rankings with full employee data

@@ -1,14 +1,8 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
 
-export const geminiPro = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash",
-});
-
-export const geminiFlash = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash",
-});
+const MODEL = "llama-3.3-70b-versatile";
 
 export async function callWithRetry<T>(
   fn: () => Promise<T>,
@@ -18,12 +12,29 @@ export async function callWithRetry<T>(
     return await fn();
   } catch (error) {
     if (retries > 0) {
-      await new Promise((r) => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 2000));
       return callWithRetry(fn, retries - 1);
     }
     throw error;
   }
 }
 
-export { SchemaType };
-export default genAI;
+export async function chatCompletion(
+  systemPrompt: string,
+  userMessage: string,
+  temperature = 0.2
+): Promise<string> {
+  const response = await groq.chat.completions.create({
+    model: MODEL,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userMessage },
+    ],
+    temperature,
+    response_format: { type: "json_object" },
+  });
+
+  return response.choices[0]?.message?.content || "{}";
+}
+
+export default groq;
