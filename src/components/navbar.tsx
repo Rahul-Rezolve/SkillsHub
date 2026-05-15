@@ -41,7 +41,7 @@ export function Navbar() {
   const links = session.user.role === "HR" ? hrLinks : employeeLinks;
 
   return (
-    <nav className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href={session.user.role === "HR" ? "/dashboard" : "/profile"} className="flex items-center gap-2 font-bold text-lg">
