@@ -131,7 +131,7 @@ export default function DashboardPage() {
                   <Search className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-base">Semantic Search</CardTitle>
+                  <CardTitle className="text-base text-[#0485DA]">Semantic Search</CardTitle>
                   <p className="text-sm text-muted-foreground">
                     Find talent with natural language
                   </p>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
                   <ClipboardCheck className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-base">Review Queue</CardTitle>
+                  <CardTitle className="text-base text-[#0485DA]">Review Queue</CardTitle>
                   <p className="text-sm text-muted-foreground">
                     Review AI-extracted profiles
                   </p>
@@ -167,7 +167,7 @@ export default function DashboardPage() {
                   <Upload className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-base">Upload Resume</CardTitle>
+                  <CardTitle className="text-base text-[#0485DA]">Upload Resume</CardTitle>
                   <p className="text-sm text-muted-foreground">
                     Extract skills from a PDF
                   </p>
