@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  HR
+  EMPLOYEE
+}
+
+enum SkillCategory {
+  LANGUAGE
+  FRAMEWORK
+  PLATFORM
+  TOOL
+  DOMAIN
+}
+
+enum Proficiency {
+  NOVICE
+  INTERMEDIATE
+  EXPERT
+}
+
+enum DraftStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  password   String
+  role       Role
+  employeeId String?   @unique
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Employee {
+  id                 String          @id @default(cuid())
+  name               String
+  email              String          @unique
+  title              String?
+  location           String?
+  currentAllocation  String?
+  lastProjectEndDate DateTime?
+  resumeUrl          String?
+  skills             EmployeeSkill[]
+  projects           Project[]
+  certifications     Certification[]
+  profileDrafts      ProfileDraft[]
+  user               User?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+}
+
+model Skill {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  category  SkillCategory
+  employees EmployeeSkill[]
+}
+
+model EmployeeSkill {
+  id          String      @id @default(cuid())
+  employeeId  String
+  skillId     String
+  proficiency Proficiency
+  yearsExp    Float       @default(0)
+  inferred    Boolean     @default(false)
+  confidence  Float       @default(1.0)
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  skill       Skill       @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, skillId])
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  employeeId  String
+  name        String
+  description String?
+  role        String?
+  startDate   DateTime
+  endDate     DateTime?
+  techStack   String[]
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model Certification {
+  id         String    @id @default(cuid())
+  employeeId String
+  name       String
+  issuer     String?
+  date       DateTime?
+  employee   Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model ProfileDraft {
+  id            String      @id @default(cuid())
+  employeeId    String?
+  employeeEmail String?
+  extractedJson Json
+  status        DraftStatus @default(PENDING)
+  employee      Employee?   @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
