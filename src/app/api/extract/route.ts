@@ -5,7 +5,7 @@ import { chatCompletion, callWithRetry } from "@/lib/gemini";
 import { EXTRACTION_SYSTEM_PROMPT, SKILL_INFERENCE_PROMPT } from "@/lib/prompts";
 import { SKILL_TAXONOMY } from "@/lib/skill-taxonomy";
 import { prisma } from "@/lib/db";
-import pdfParse from "pdf-parse";
+import pdfParse from "pdf-parse/lib/pdf-parse.js";
 
 export async function POST(req: NextRequest) {
   try {
