@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Brain,
   Search,
@@ -24,123 +25,112 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-3.5rem)]">
-      {/* Hero */}
-      <section className="relative overflow-hidden px-4 pt-20 pb-24 sm:pt-28 sm:pb-32">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-transparent to-transparent" />
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg">
-            <Brain className="h-8 w-8 text-primary-foreground" />
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-            AI-Powered{" "}
-            <span className="text-blue-600">Skills Intelligence</span>
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Upload resumes and let AI extract structured skill profiles.
-            Search your talent pool with natural language.
-            Make smarter staffing decisions, faster.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/login"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-primary px-8 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors"
-            >
-              Get Started
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/signup"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border bg-white px-8 text-sm font-medium shadow-sm hover:bg-gray-50 transition-colors"
-            >
-              Create Account
-            </Link>
-          </div>
-        </div>
-      </section>
+    <div className="relative min-h-[calc(100vh-3.5rem)]">
+      {/* Background image */}
+      <Image
+        src="/hero-bg.jpg"
+        alt=""
+        fill
+        priority
+        className="object-cover object-center"
+      />
+      <div className="absolute inset-0 bg-slate-900/10" />
 
-      {/* Features */}
-      <section className="px-4 py-20">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">
-            Everything you need to manage talent
-          </h2>
-          <p className="mt-3 text-center text-muted-foreground">
-            From resume parsing to intelligent search — all powered by AI
-          </p>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col min-h-[calc(100vh-3.5rem)]">
+        {/* Hero */}
+        <section className="flex-1 flex items-center justify-center px-4 py-16">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto mb-8 inline-flex items-center justify-center rounded-2xl bg-white/20 p-4 backdrop-blur-md shadow-lg ring-1 ring-white/30">
+              <Brain className="h-7 w-7 text-slate-700" />
+            </div>
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <FeatureCard
-              icon={<FileText className="h-6 w-6" />}
-              title="Smart Resume Extraction"
-              description="Upload a PDF and AI extracts skills, projects, certifications, and experience — structured and ready to use."
-            />
-            <FeatureCard
-              icon={<Sparkles className="h-6 w-6" />}
-              title="Skill Inference"
-              description="AI infers related skills from a candidate's profile. React developer? Likely knows JavaScript, Node.js, and more."
-            />
-            <FeatureCard
-              icon={<Search className="h-6 w-6" />}
-              title="Semantic Search"
-              description="Search with natural language like 'senior Python developer in Pune with cloud experience' and get ranked results."
-            />
-            <FeatureCard
-              icon={<Users className="h-6 w-6" />}
-              title="Talent Directory"
-              description="Browse your entire talent pool with filters for skills, proficiency levels, and availability."
-            />
-            <FeatureCard
-              icon={<Shield className="h-6 w-6" />}
-              title="HR Review Queue"
-              description="AI-extracted profiles go through an HR review before being committed — ensuring quality and accuracy."
-            />
-            <FeatureCard
-              icon={<CheckCircle className="h-6 w-6" />}
-              title="Role-Based Access"
-              description="HR managers search and manage. Employees upload and view their own profiles. Clean separation of concerns."
-            />
-          </div>
-        </div>
-      </section>
+            {/* Glass hero card */}
+            <div className="rounded-2xl border border-white/40 bg-white/30 px-8 py-10 backdrop-blur-xl shadow-xl">
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-800 sm:text-3xl">
+                AI-Powered Skills Intelligence
+              </h1>
+              <p className="mt-3 text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
+                Upload resumes and let AI extract structured skill profiles.
+                Search your talent pool with natural language.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href="/login"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-800 px-6 text-xs font-medium text-white shadow hover:bg-slate-700 transition-colors"
+                >
+                  Get Started
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-white/50 bg-white/40 px-6 text-xs font-medium text-slate-700 backdrop-blur-sm hover:bg-white/60 transition-colors"
+                >
+                  Create Account
+                </Link>
+              </div>
+            </div>
 
-      {/* CTA */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-2xl rounded-2xl bg-primary p-10 text-center text-primary-foreground shadow-lg">
-          <h2 className="text-2xl font-bold sm:text-3xl">Ready to try it?</h2>
-          <p className="mt-3 text-primary-foreground/80">
-            Use the demo accounts to explore all features instantly.
-          </p>
-          <div className="mt-4 inline-block rounded-lg bg-white/10 px-4 py-2 text-sm font-mono">
-            HR: hr@demo.com &nbsp;|&nbsp; Employee: dev@demo.com &nbsp;|&nbsp; Password: demo1234
-          </div>
-          <div className="mt-6">
-            <Link
-              href="/login"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-8 text-sm font-medium text-primary shadow hover:bg-gray-100 transition-colors"
-            >
-              Sign In Now
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
+            {/* Feature pills */}
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <FeaturePill
+                icon={<FileText className="h-3.5 w-3.5" />}
+                title="Resume Extraction"
+                description="AI parses PDFs into structured profiles"
+              />
+              <FeaturePill
+                icon={<Sparkles className="h-3.5 w-3.5" />}
+                title="Skill Inference"
+                description="Automatically discovers related skills"
+              />
+              <FeaturePill
+                icon={<Search className="h-3.5 w-3.5" />}
+                title="Semantic Search"
+                description="Natural language talent queries"
+              />
+              <FeaturePill
+                icon={<Users className="h-3.5 w-3.5" />}
+                title="Talent Directory"
+                description="Browse and filter your talent pool"
+              />
+              <FeaturePill
+                icon={<Shield className="h-3.5 w-3.5" />}
+                title="HR Review Queue"
+                description="Quality-checked before committing"
+              />
+              <FeaturePill
+                icon={<CheckCircle className="h-3.5 w-3.5" />}
+                title="Role-Based Access"
+                description="Separate HR and employee views"
+              />
+            </div>
 
-      {/* Footer */}
-      <footer className="mt-auto border-t px-4 py-6">
-        <div className="mx-auto max-w-6xl flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            <span>SkillsHub</span>
+            {/* Demo credentials */}
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/25 px-4 py-2 backdrop-blur-md">
+              <span className="text-[11px] text-slate-500">Demo:</span>
+              <span className="text-[11px] font-mono text-slate-600">
+                hr@demo.com / demo1234
+              </span>
+            </div>
           </div>
-          <span>Built for Hackathon 2026</span>
-        </div>
-      </footer>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-white/30 bg-white/20 backdrop-blur-sm px-4 py-4">
+          <div className="mx-auto max-w-6xl flex items-center justify-between text-xs text-slate-500">
+            <div className="flex items-center gap-1.5">
+              <Brain className="h-3.5 w-3.5" />
+              <span>SkillsHub</span>
+            </div>
+            <span>Hackathon 2026</span>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
 
-function FeatureCard({
+function FeaturePill({
   icon,
   title,
   description,
@@ -150,14 +140,14 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="rounded-xl border bg-white p-6 shadow-sm">
-      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+    <div className="flex items-start gap-3 rounded-xl border border-white/40 bg-white/30 px-4 py-3 backdrop-blur-md text-left">
+      <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/50 text-slate-600">
         {icon}
       </div>
-      <h3 className="font-semibold">{title}</h3>
-      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-        {description}
-      </p>
+      <div>
+        <p className="text-xs font-medium text-slate-700">{title}</p>
+        <p className="text-[11px] text-slate-500 leading-snug">{description}</p>
+      </div>
     </div>
   );
 }

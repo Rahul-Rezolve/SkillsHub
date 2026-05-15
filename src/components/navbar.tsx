@@ -38,20 +38,27 @@ export function Navbar() {
 
   const links = session ? (session.user.role === "HR" ? hrLinks : employeeLinks) : [];
 
+  const isLanding = pathname === "/" && !session;
+
   if (!session) {
     return (
-      <nav className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <nav className={cn(
+        "sticky top-0 z-40 border-b backdrop-blur",
+        isLanding
+          ? "border-white/30 bg-white/20"
+          : "border-border bg-white/95 supports-[backdrop-filter]:bg-white/80"
+      )}>
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <Brain className="h-6 w-6 text-primary" />
+          <Link href="/" className="flex items-center gap-2 font-semibold text-sm text-slate-700">
+            <Brain className="h-5 w-5" />
             <span>SkillsHub</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link href="/login">
-              <Button variant="ghost" size="sm">Sign In</Button>
+              <Button variant="ghost" size="sm" className="text-xs">Sign In</Button>
             </Link>
             <Link href="/signup">
-              <Button size="sm">Sign Up</Button>
+              <Button size="sm" className="text-xs">Sign Up</Button>
             </Link>
           </div>
         </div>
